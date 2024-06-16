@@ -52,6 +52,20 @@
             margin-left: 10px;
             font-size: 1.5em;
         }
+        #boost-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #boost-button:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
         @media (max-width: 600px) {
             #counter {
                 font-size: 1.5em; /* Уменьшаем размер шрифта на мобильных устройствах */
@@ -66,6 +80,7 @@
         <div id="energy-bar"></div>
         <div id="energy-percentage">100%</div>
     </div>
+    <button id="boost-button">БУСТ</button>
 
     <script>
         let count = 0;
@@ -89,6 +104,15 @@
             }
         });
 
+        document.getElementById('boost-button').addEventListener('click', function() {
+            if (energy < maxEnergy) {
+                energy = Math.min(energy + maxEnergy, maxEnergy); // Добавляем 50 энергии, но не превышаем максимальное значение
+                updateEnergyBar();
+                disableBoostButton();
+                setTimeout(enableBoostButton, 24 * 60 * 60 * 1000); // Включаем кнопку через 24 часа
+            }
+        });
+
         function updateEnergyBar() {
             const energyBar = document.getElementById('energy-bar');
             const energyPercentage = document.getElementById('energy-percentage');
@@ -105,6 +129,16 @@
                     clearInterval(recoveryInterval);
                 }
             }, energyRecoveryInterval);
+        }
+
+        function disableBoostButton() {
+            const boostButton = document.getElementById('boost-button');
+            boostButton.disabled = true;
+        }
+
+        function enableBoostButton() {
+            const boostButton = document.getElementById('boost-button');
+            boostButton.disabled = false;
         }
 
         updateEnergyBar(); // Инициализируем шкалу энергии при загрузке
